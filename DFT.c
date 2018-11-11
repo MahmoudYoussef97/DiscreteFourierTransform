@@ -3,14 +3,14 @@
 #include <math.h>
 #define PI 3.14159265
 
-/* Define complex Struct */
+/*...................... Define Complex Number ...........................*/
 typedef struct complex
 {
     double real;
     double img;
 }Complex;
 
-/* Evaluating Twiddle Base */
+/*...................... Evaluate Twiddle Base ...........................*/
 void EvaluateTwiddleBase(int N,Complex TwiddleBase[]){
 
     int i;
@@ -25,7 +25,7 @@ void EvaluateTwiddleBase(int N,Complex TwiddleBase[]){
 
 }
 
-/* Evaluating Twiddle Matrix Wn */
+/*...................... Evaluate Twiddle Matrix Wn ...........................*/
 void EvaluateTwiddleMatrix(int N,Complex TwiddleBase[],Complex TwiddleMatrix[N][N]){
 
     int i,j;
@@ -40,7 +40,7 @@ void EvaluateTwiddleMatrix(int N,Complex TwiddleBase[],Complex TwiddleMatrix[N][
     }
 }
 
-/* Evaluating Result DFT */
+/*...................... Evaluate The Result of DFT ...........................*/
 void EvaluateDFT(int N, Complex TwiddleMatrix[N][N],double X[], Complex DFT[]){
 
     int i,j;
@@ -61,6 +61,7 @@ void EvaluateDFT(int N, Complex TwiddleMatrix[N][N],double X[], Complex DFT[]){
         }
 }
 
+/*...................... Printing Discrete Fourier Transform X[K] ...........................*/
 void PrintDFT(int N, Complex DFT[])
 {   int i;
 
@@ -68,17 +69,18 @@ void PrintDFT(int N, Complex DFT[])
     for(i = 0; i < N; i++)
     {   
         if(i == 0)
-            printf("X[K} { ");
+        printf("X[K} { ");
+
         if(i == N-1)
         {   
-            if (ceil(DFT[i].img) == 0)
-                printf("%0.3lf ",DFT[i].real);
-            else if(ceil(DFT[i].real) == 0)
+            if ( (int)(DFT[i].img * 100) == 0 )
+                printf("%0.3lf, ",DFT[i].real);
+            else if( (int)(DFT[i].real * 100) == 0 )
             {
                 if(DFT[i].img > 0)
-                printf("%0.3lf + %0.3lfi ",DFT[i].real,DFT[i].img);
+                printf("%0.3lfi ",DFT[i].img);
             else
-                printf("%0.3lf %0.3lfi ",DFT[i].real,DFT[i].img);
+                printf("%0.3lfi ",DFT[i].img);
             }
             else if(DFT[i].img > 0)
                 printf("%0.3lf + %0.3lfi ",DFT[i].real,DFT[i].img);
@@ -87,14 +89,14 @@ void PrintDFT(int N, Complex DFT[])
                 printf("}");
         }
         else{
-            if (ceil(DFT[i].img) == 0)
+            if ( (int)(DFT[i].img * 100) == 0 )
                 printf("%0.3lf, ",DFT[i].real);
-            else if(ceil(DFT[i].real) == 0)
-            {
+            else if( (int)(DFT[i].real * 100) == 0 )
+            {   
                 if(DFT[i].img > 0)
-                printf(" %0.3lf + %0.3lfi, ",DFT[i].real,DFT[i].img);
-            else
-                printf(" %0.3lf %0.3lfi, ",DFT[i].real,DFT[i].img);
+                printf("%0.3lfi, ",DFT[i].img);
+                else
+                printf("%0.3lfi, ",DFT[i].img);
             }
             else if(DFT[i].img > 0)
                 printf(" %0.3lf + %0.3lfi, ",DFT[i].real,DFT[i].img);
@@ -106,6 +108,7 @@ void PrintDFT(int N, Complex DFT[])
     printf("\n");
 }
 
+/*...................... Printing Magnitude of X[K] ...........................*/
 void PrintMagDFT(int N,double MagDFT[]){
 
         /* Printing Mag[X[K]] */
@@ -126,6 +129,7 @@ void PrintMagDFT(int N,double MagDFT[]){
     printf("\n");
 }
 
+/*...................... Printing Phase of X[K] ...........................*/
 void PrintPhaseDFT(int N,double PhaseDFT[])
 {
     /* Printing Phase[X[K]] */
@@ -140,12 +144,13 @@ void PrintPhaseDFT(int N,double PhaseDFT[])
             printf("}");
         }
         else{
-            printf(" %0.3lf, ",PhaseDFT[i]);
+            printf("%0.3lf, ",PhaseDFT[i]);
         }
         
     }
 }
 
+/*...................... Evaluate Magnitude of X[K] ...........................*/
 void EvaluateMagintudeDFT(int N,Complex DFT[],double MagDFT[]){
     int i;
 
@@ -155,55 +160,61 @@ void EvaluateMagintudeDFT(int N,Complex DFT[],double MagDFT[]){
     }
 }
 
+/*...................... Evaluate Phase of X[K] ...........................*/
 void EvaluatePhaseDFT(int N,Complex DFT[],double PhaseDFT[]){
         int i;
 
     for(i = 0; i < N; i++)
     {      
-        if (ceil(DFT[i].img) == 0)
+        if ( (int)(DFT[i].img * 100) == 0)
         {
             if(DFT[i].real > 0)
                 PhaseDFT[i] = 0;
             else
                 PhaseDFT[i] = 180;
         }
-        else if (ceil(DFT[i].real) == 0)
-            PhaseDFT[i] = 90;
+        else if ( (int)(DFT[i].real * 100) == 0)
+            {
+                if(DFT[i].img > 0)
+                    PhaseDFT[i] = 90;
+                else
+                    PhaseDFT[i] = -90;
+            }
         else if(DFT[i].img > 0 && DFT[i].real > 0)
-            PhaseDFT[i] = atan( abs(DFT[i].img) / abs(DFT[i].real) ) * 180 / PI;
+            PhaseDFT[i] = atan( (DFT[i].img) / (DFT[i].real) ) * 180 / PI;
         else if (DFT[i].img > 0 && DFT[i].real < 0)
-            PhaseDFT[i] = 180 - ( atan( (DFT[i].img) / abs(DFT[i].real) ) * 180 / PI );
+            PhaseDFT[i] = 180 - ( atan( (DFT[i].img) / (-1 * (DFT[i].real) ) ) * 180 / PI );
         else if (DFT[i].img < 0 && DFT[i].real < 0)
-            PhaseDFT[i] = -180 + ( atan ( (DFT[i].img) / (DFT[i].real) ) * 180 / PI  );
+            PhaseDFT[i] = -180 + ( atan ( (-1 * (DFT[i].img) ) / (-1 * (DFT[i].real) ) ) * 180 / PI  );
         else if (DFT[i].img < 0 && DFT[i].real > 0)
-            PhaseDFT[i] = - ( atan( (DFT[i].img) / abs(DFT[i].real) )  * 180 / PI );
+            PhaseDFT[i] = - ( atan( (-1 * (DFT[i].img) ) / (DFT[i].real) )  * 180 / PI );
     }
 }
 
 int main(int argc, char const *argv[])
 {
-    int N;
+    int N;    // Number of Points
     int i,j; // for loop iterators
     printf("How many N-Points do you want to calculate DFT? \n");
     scanf("%d", &N);    // Reading Number of Points
-    printf("Enter the sequence form of X(N): Ex: 1 2 3 4 \n");
+    printf("Enter the sequence form of X(N): Ex: 1 2 3 4 \n"); 
     double X[N],MagDFT[N],PhaseDFT[N];
-    // Reading X[N] as input
+    // Reading Input X[n] in Sequence Form
     for(i = 0; i < N; i++)
     {
         scanf("%lf", &X[i]);
     }
-    Complex TwiddleBase[N];                                 // Twiddle Base array that includes n-1 elements
-    Complex TwiddleMatrix[N][N];
+    Complex TwiddleBase[N];                                     // Twiddle Base array that includes n-1 elements
+    Complex TwiddleMatrix[N][N];                                // Twiddle Matrix
     Complex DFT[N];
-    EvaluateTwiddleBase(N, TwiddleBase);                     // Evaluate Twiddle Basic Elements
-    EvaluateTwiddleMatrix(N, TwiddleBase, TwiddleMatrix);     // Evaluate Twiddle Matrix Wn
-    EvaluateDFT(N, TwiddleMatrix, X, DFT);
-    EvaluateMagintudeDFT(N, DFT, MagDFT);
-    EvaluatePhaseDFT(N,DFT,PhaseDFT);
-    PrintDFT(N, DFT);
-    PrintMagDFT(N, MagDFT);
-    PrintPhaseDFT(N, PhaseDFT);
+    EvaluateTwiddleBase(N, TwiddleBase);                        // Evaluate Twiddle Basic Elements
+    EvaluateTwiddleMatrix(N, TwiddleBase, TwiddleMatrix);       // Evaluate Twiddle Matrix Wn
+    EvaluateDFT(N, TwiddleMatrix, X, DFT);                      // Evaluate Discrete Fourier Transfor X[K]  
+    EvaluateMagintudeDFT(N, DFT, MagDFT);                       // Evaluate Magnitude
+    EvaluatePhaseDFT(N,DFT,PhaseDFT);                           // Evaluate Phase
+    PrintDFT(N, DFT);                                           // Printing X[K]
+    PrintMagDFT(N, MagDFT);                                     // Printing Magnitude 
+    PrintPhaseDFT(N, PhaseDFT);                                 // Printing Phase
 
     return 0;
 }
